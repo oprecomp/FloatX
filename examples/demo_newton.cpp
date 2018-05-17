@@ -17,11 +17,11 @@
 
 /*
  * compile that file
- * g++ -std=c++11 -Wall -o DemoNewton -I. DemoNewton.cpp
+ * g++ -std=c++11 -Wall -o demo_newton -I../src demo_newton.cpp
  */
 
-#include <floatx.hpp>
 #include <iostream>
+#include "floatx.hpp"
 
 // Babylonian method:
 // Derived from Netwon

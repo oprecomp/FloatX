@@ -73,7 +73,7 @@ double IEEEHelper::iterateSubnormalRange(int im)
 
 void show(uint64_t u)
 {
-    printf("%016llx\t", u);
+    printf("%016llx\t", static_cast<long long int>(u));
     std::cout << std::bitset<64>(u) << std::endl;
 }
 
@@ -84,7 +84,7 @@ void show(double d)
 {
     printf("%.20e\t", d);
     uint64_t u = CAST_DOUBLE_TO_UINT64(d);
-    printf("0x%016llx\t", u);
+    printf("0x%016llx\t", static_cast<long long int>(u));
     std::cout << std::bitset<64>(u) << std::endl;
 }
 

@@ -7,5 +7,5 @@ target_link_libraries(example2 PRIVATE floatx)
 add_executable(common_type common_type.cpp)
 target_link_libraries(common_type PRIVATE floatx)
 
-add_executable(DemoNewton DemoNewton.cpp)
-target_link_libraries(DemoNewton PRIVATE floatx)
+add_executable(demo_newton demo_newton.cpp)
+target_link_libraries(demo_newton PRIVATE floatx)

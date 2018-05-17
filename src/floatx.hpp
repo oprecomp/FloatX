@@ -398,7 +398,7 @@ ENABLE_ARITHMETIC_OPERATOR(/)
 
 template <typename FloatX>
 FLOATX_INLINE typename std::enable_if<float_traits<FloatX>::is_floatx,
-                                      std::ostream&>::type&
+                                      std::ostream&>::type
 operator<<(std::ostream& os, const FloatX& f) noexcept
 {
     return os << typename float_traits<FloatX>::backend_float(f);
@@ -1001,6 +1001,12 @@ private:
     {
         const auto exp_bits = get_exp_bits(self());
         const auto sig_bits = get_sig_bits(self());
+
+        if (exp_bits == float_traits<backend_float>::exp_bits &&
+            sig_bits == float_traits<backend_float>::sig_bits) {
+            return value;
+        }
+
         bits_type bits = reinterpret_as_bits(value);
         auto sig = (bits & backend_sig_mask) >> backend_sig_pos;
         auto raw_exp = bits & backend_exp_mask;
@@ -1090,7 +1096,38 @@ FLOATX_ATTRIBUTES FLOATX_INLINE std::string bitstring(const Float& x) noexcept
 }
 
 
-};  // namespace flx
+#define ENABLE_SINGLE_OPERAND_FUNCTION(_func_name, _call_func)               \
+    template <typename Float>                                                \
+    FLOATX_ATTRIBUTES FLOATX_ATTRIBUTES                                      \
+        typename std::enable_if<float_traits<Float>::is_floatx, Float>::type \
+        _func_name(const Float& op)                                          \
+    {                                                                        \
+        using backend_float = typename float_traits<Float>::backend_float;   \
+        return Float{_call_func(backend_float{op})};                         \
+    }
+
+
+namespace detail {
+
+
+template <typename T>
+FLOATX_ATTRIBUTES FLOATX_INLINE T real_impl(const T& x)
+{
+    return x;
+}
+
+
+}  // namespace detail
+
+
+ENABLE_SINGLE_OPERAND_FUNCTION(sqrt, std::sqrt);
+ENABLE_SINGLE_OPERAND_FUNCTION(abs, std::fabs);
+ENABLE_SINGLE_OPERAND_FUNCTION(real, detail::real_impl);
+ENABLE_SINGLE_OPERAND_FUNCTION(operator+, +);
+ENABLE_SINGLE_OPERAND_FUNCTION(operator-, -);
+
+
+}  // namespace flx
 
 
 #undef FLOATX_ATTRIBUTES

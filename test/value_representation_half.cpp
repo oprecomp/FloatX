@@ -22,7 +22,7 @@ void show(double d)
 {
     printf("%.20e\t", d);
     uint64_t u = flx::detail::reinterpret_as_bits(d);
-    printf("0x%016llx\t", u);
+    printf("0x%016llx\t", static_cast<long long int>(u));
     std::cout << std::bitset<64>(u) << std::endl;
 }
 

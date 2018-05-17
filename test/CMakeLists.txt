@@ -1,10 +1,14 @@
 function(create_test test_name)
-    add_executable(${test_name} ${test_name}.cpp)
-    target_link_libraries(${test_name} PRIVATE floatx gtest_main)
     file(RELATIVE_PATH REL_BINARY_DIR
          ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-    add_test(NAME ${REL_BINARY_DIR}/${test_name} COMMAND ${test_name})
+    string(REPLACE "/" "_" TEST_TARGET_NAME "${REL_BINARY_DIR}/${test_name}")
+    add_executable(${TEST_TARGET_NAME} ${test_name}.cpp)
+    set_target_properties(${TEST_TARGET_NAME} PROPERTIES
+        OUTPUT_NAME ${test_name})
+    target_link_libraries(${TEST_TARGET_NAME} PRIVATE floatx gtest_main)
+    add_test(NAME ${REL_BINARY_DIR}/${test_name} COMMAND ${TEST_TARGET_NAME})
 endfunction(create_test)
+
 
 add_library(ieee_helper STATIC IEEEHelper.cpp)
 
@@ -17,8 +21,8 @@ create_test(std_integration)
 create_test(NanInf)
 create_test(round_nearest)
 create_test(value_representation)
-target_link_libraries(value_representation PRIVATE ieee_helper)
+target_link_libraries(test_value_representation PRIVATE ieee_helper)
 create_test(value_representation_half)
-target_link_libraries(value_representation_half PRIVATE ieee_helper)
+target_link_libraries(test_value_representation_half PRIVATE ieee_helper)
 create_test(value_representation_bits)
-target_link_libraries(value_representation_bits PRIVATE ieee_helper)
+target_link_libraries(test_value_representation_bits PRIVATE ieee_helper)
