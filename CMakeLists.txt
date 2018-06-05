@@ -11,6 +11,8 @@ if(BUILD_CUDA_TESTS)
     enable_language(CUDA)
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
     set(CMAKE_CUDA_STANDARD 11)
+    # silence false-positive CUDA warnings
+    set(CMAKE_CUDA_FLAGS "--disable-warnings ${CMAKE_CUDA_FLAGS}")
 endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
