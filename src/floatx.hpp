@@ -20,7 +20,7 @@
 
 
 #ifdef __CUDA_ARCH__
-#include "cuda_runtime.h"
+#include <cuda_runtime.h>
 #endif  // __CUDA_ARCH__
 
 #include <climits>
@@ -1096,14 +1096,20 @@ FLOATX_ATTRIBUTES FLOATX_INLINE std::string bitstring(const Float& x) noexcept
 }
 
 
-#define ENABLE_SINGLE_OPERAND_FUNCTION(_func_name, _call_func)               \
-    template <typename Float>                                                \
-    FLOATX_ATTRIBUTES FLOATX_ATTRIBUTES                                      \
-        typename std::enable_if<float_traits<Float>::is_floatx, Float>::type \
-        _func_name(const Float& op)                                          \
-    {                                                                        \
-        using backend_float = typename float_traits<Float>::backend_float;   \
-        return Float{_call_func(backend_float{op})};                         \
+#define ENABLE_SINGLE_OPERAND_FUNCTION(_func_name, _call_func)            \
+    template <typename BackendFloat>                                      \
+    FLOATX_ATTRIBUTES FLOATX_ATTRIBUTES floatxr<BackendFloat> _func_name( \
+        const floatxr<BackendFloat>& op)                                  \
+    {                                                                     \
+        return floatxr<BackendFloat>{_call_func(BackendFloat{op})};       \
+    }                                                                     \
+    template <int sig_bits, int exp_bits, typename BackendFloat>          \
+    FLOATX_ATTRIBUTES FLOATX_ATTRIBUTES                                   \
+        floatx<sig_bits, exp_bits, BackendFloat>                          \
+        _func_name(const floatx<sig_bits, exp_bits, BackendFloat>& op)    \
+    {                                                                     \
+        return floatx<sig_bits, exp_bits, BackendFloat>{                  \
+            _call_func(BackendFloat{op})};                                \
     }
 
 
